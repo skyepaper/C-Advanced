@@ -1,6 +1,4 @@
-# C-Sharp-Advanced
-
-Bombs
+# Bombs
 
 You will be given a two sequence of integers, representing bomb effects and bomb casings.
 You need to start from the first bomb effect and try to mix it with the last bomb casing. 
