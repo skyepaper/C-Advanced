@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Exam
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] effect = Console.ReadLine().Split(", ").Select(int.Parse).ToArray();
+            int[] casing = Console.ReadLine().Split(", ").Select(int.Parse).ToArray();
+
+            int daturaCo = 0, cherryCo = 0, smokeCo = 0, sum = 0, flag = 0, effInd = 0, casInd = 0;
+
+            int j = casing.Length - 1;
+            for (int i = 0; i < effect.Length; i++)
+            {
+                sum = effect[i] + casing[j];
+                while (sum>0)
+                {
+                    if (sum == 40) { daturaCo++; break; }
+                    else if (sum == 60) { cherryCo++; break; }
+                    else if (sum == 120) { smokeCo++; break; }
+                    else sum -= 5;
+                }
+                sum = 0;
+                j--;
+               
+                effInd = i+1;
+                casInd = j;
+               
+                if (daturaCo >= 3 && cherryCo >= 3 && smokeCo >= 3) { flag = 1; break; }
+                if (j < 0) break;
+            }
+
+            if (flag == 1) Console.WriteLine("Bene! You have successfully filled the bomb pouch!");
+            else Console.WriteLine("You don't have enough materials to fill the bomb pouch.");
+
+            List<int> effList = new List<int>();
+            List<int> casList = new List<int>();
+            if (effInd < effect.Length)
+            {
+                for (int i = effInd; i < effect.Length; i++) effList.Add(effect[i]);
+                Console.WriteLine($"Bomb Effects: {string.Join(", ", effList)}");
+
+            }
+            else Console.WriteLine($"Bomb Effects: empty");
+
+            if (casInd >= 0)
+            {
+                for (int i = 0; i <= casInd; i++) casList.Add(casing[i]);
+                Console.WriteLine($"Bomb Casings: {string.Join(", ", casList)}");
+            }
+            else Console.WriteLine($"Bomb Casings: empty");
+
+            Console.WriteLine($"Cherry Bombs: {cherryCo}");
+            Console.WriteLine($"Datura Bombs: {daturaCo}");
+            Console.WriteLine($"Smoke Decoy Bombs: {smokeCo}");
+        }
+    }
+}
