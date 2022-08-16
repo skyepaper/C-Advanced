@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Exam
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int n = int.Parse(Console.ReadLine());
+            char[,] matrix = new char[n, n];
+
+            for (int i = 0; i < n; i++)
+            {
+                string input = Console.ReadLine();
+                for (int j = 0; j < n; j++) matrix[i, j] = input[j];
+            }
+
+            int col = 0, row = 0;
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                    if (matrix[i, j] == 'S') { row = i; col = j; }
+
+            int food = 0, flag = 0;
+            while (true)
+            {
+                int colNext = 0, rowNext = 0;
+                string command = Console.ReadLine();
+                switch (command)
+                {
+                    case "left": colNext = col - 1; rowNext = row; break;
+                    case "right": colNext = col + 1; rowNext = row; break;
+                    case "up": colNext = col; rowNext = row - 1; break;
+                    case "down": colNext = col; rowNext = row + 1; break;
+                }
+                matrix[row, col] = '.';
+
+                if (colNext == n || colNext == -1 || rowNext == n || rowNext == -1)
+                { flag = 1; break; }
+
+                switch (matrix[rowNext, colNext])
+                {
+                    case 'B':
+                        matrix[row, col] = '.';
+                        matrix[rowNext, colNext] = '.';
+                        for (int i = 0; i < n; i++)
+                            for (int j = 0; j < n; j++)
+                                if (matrix[i, j] == 'B') { matrix[i, j] = 'S'; rowNext = i; colNext = j; }
+                        break;
+                    case '*':
+                        matrix[row, col] = '.';
+                        matrix[rowNext, colNext] = 'S';
+                        food++;
+                        break;
+                    case '-':
+                        matrix[row, col] = '.';
+                        matrix[rowNext, colNext] = 'S';
+                        break;
+
+                }
+                row = rowNext; col = colNext;
+                if (food == 10) { flag = 2; break; }
+            }
+
+            if (flag == 1) Console.WriteLine("Game over!");
+            else Console.WriteLine("You won! You fed the snake.");
+            Console.WriteLine($"Food eaten: {food}");
+            for (int i = 0; i < n; i++)
+            {
+
+                for (int j = 0; j < n; j++) Console.Write(matrix[i, j]);
+                Console.Write("\n");
+            }
+
+        }
+    }
+}
