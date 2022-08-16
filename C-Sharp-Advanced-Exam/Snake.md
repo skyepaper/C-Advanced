@@ -32,70 +32,76 @@ The snake position will be marked with 'S'.
 The snake will always either go out of its territory or eat enough food.  
 There will be no case in which the snake will go through itself.  
   
-## Examples  
-- Input  		
-6
------S
-----B-
-------
-------
---B---
---*---
+## Examples    
+- Input 
+  
+6  
+\-----S  
+\----B-  
+\------  
+\------  
+\--B---  
+\--*---  
+left  
+down  
+down  
+down  
 left
-down
-down
-down
-left	
+  
+- Output  
+   
+Game over!  
+Food eaten: 1    
+\----..  
+\----.-  
+\------  
+\------  
+\--.---  
+\--.---  
+  
+- Comments  
+  
+|(1) left|(2) down |(3) down |(4) down |
+|:------:|:-------:|:-------:|:-------:| 
+| ----S. | ----..  |  ----.. |  ----.. | 
+| ----B- | ----.-  |  ----.- |  ----.- |  
+| ------ | ------  |  ------ |  ------ | 
+| ------ | ------  |  ------ |  ------ | 
+| --B--- | --S---  |  --.--- |  --.--- | 
+| --\*---| --\*--- |  --S--- |  --.--- | 
+  
+(3) eat the food: '*' (5, 2)  
+(4) the snake goes out from its territory and the program ends  
+  
+- Input  
+7  
+--\*\*\*S-  
+--\*----  
+--\*\*\*--  
+---\*\*--  
+---\*---  
+---\*---  
+---\*---  
+left  
+left  
+left  
+down  
+down  
+right  
+right  
+down  
+left  
+down  
+  
+- Output  
 
-Output
-Game over!
-Food eaten: 1
-----..
-----.-
-------
-------
---.---
---.---	
-
-Comments
-1) left     2) down     3) down     5) down
-   ----S.      ----..      ----..      ----..
-   ----B-      ----.-      ----.-      ----.-
-   ------      ------      ------      ------
-   ------      ------      ------      ------
-   --B---      --S---      --.---      --.---
-   --*---      --*---      --S---      --.---
-3) eat the food: '*' (5, 2)
-5) the snake goes out from its territory and the program ends
-
-Input
-7
---***S-
---*----
---***--
----**--
----*---
----*---
----*---
-left
-left
-left
-down
-down
-right
-right
-down
-left
-down	
-
-Output
-You won! You fed the snake.
-Food eaten: 10
---....-
---.----
---...--
----..--
----S---
----*---
----*---	
-
+You won! You fed the snake.  
+Food eaten: 10  
+--....-  
+--.----  
+--...--  
+---..--  
+---S---  
+---\*---  
+---\*---  
+  
