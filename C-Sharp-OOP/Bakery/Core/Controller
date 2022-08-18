@@ -1,0 +1,151 @@
+using Bakery.Core.Contracts;
+using Bakery.Models.BakedFoods;
+using Bakery.Models.BakedFoods.Contracts;
+using Bakery.Models.Drinks;
+using Bakery.Models.Drinks.Contracts;
+using Bakery.Models.Tables;
+using Bakery.Models.Tables.Contracts;
+using Bakery.Utilities.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Bakery.Core
+{
+    public class Controller : IController
+    {
+        private readonly List<IBakedFood> bakedFoods;
+        private readonly List<IDrink> drinks;
+        private readonly List<ITable> tables;
+
+        public Controller()
+        {
+            bakedFoods = new List<IBakedFood>();
+            drinks = new List<IDrink>();
+            tables = new List<ITable>();
+        }
+        public string AddDrink(string type, string name, int portion, string brand)
+        {
+            int flag = 0;
+            Drink drink = null;
+            switch (type)
+            {
+                case "Tea":
+                    drink = new Tea(name, portion,brand); break;
+
+                case "Water":
+                    drink = new Water(name, portion, brand); break;
+                default:flag = 1;break;
+            }
+            if (flag == 0)
+            {
+                drinks.Add(drink as Drink);
+                return string.Format(OutputMessages.DrinkAdded, drink.Name, drink.GetType());
+            }
+            return null;
+        }
+        public string AddFood(string type, string name, decimal price)
+        {
+            int flag = 0;
+            BakedFood food = null;
+            switch (type)
+            {
+                case "Bread":
+                   food = new Bread(name, price);break;
+                   
+                case "Cake": 
+                    food = new Cake(name, price);break;
+                default:flag = 1;break;
+            }
+            if (flag == 0)
+            {
+                bakedFoods.Add(food as BakedFood);
+                return string.Format(OutputMessages.FoodAdded, food.Name, food.GetType());
+            }
+            return null;
+        }
+        public string AddTable(string type, int tableNumber, int capacity)
+        {
+            Table table = null;
+            switch (type)
+            {
+                case "InsideTable":
+                    table=new InsideTable(tableNumber,capacity); break;
+
+                case "OutsideTable":
+                    table = new OutsideTable(tableNumber, capacity); break;
+
+            }
+
+            tables.Add(table as Table);
+            return string.Format(OutputMessages.TableAdded, table.TableNumber);
+        }
+        public string GetFreeTablesInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var table in tables)
+                if (!table.IsReserved) sb.Append(table.GetFreeTableInfo());
+            return sb.ToString().Trim();
+        }
+        public string GetTotalIncome()
+        {
+            decimal finalBill = 0;
+            foreach (var table in tables) { finalBill += table.GetBill(); finalBill += table.Price; }
+
+            return string.Format(OutputMessages.TotalIncome,$"{ finalBill: f2}");
+        }
+        public string LeaveTable(int tableNumber)
+        {
+            var table = tables.FirstOrDefault(x => x.TableNumber == tableNumber);
+            if (table != null)
+            {
+                decimal bill = table.GetBill();
+                table.Clear();
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"Table: {table.TableNumber}");
+                sb.AppendLine($"Bill: {bill:f2}");
+
+                return sb.ToString().Trim();
+            }
+            return null;
+        }
+        public string OrderDrink(int tableNumber, string drinkName, string drinkBrand)
+        {
+            var table = tables.FirstOrDefault(x => x.TableNumber == tableNumber);
+            if(table==null)
+                return string.Format(OutputMessages.WrongTableNumber, tableNumber);
+
+            var drink = drinks.FirstOrDefault(x => x.Name == drinkName);
+            if (drink == null)
+                return string.Format(OutputMessages.NonExistentDrink, drinkName,drinkBrand);
+
+            table.OrderDrink(drink);
+            return string.Format(OutputMessages.DrinkOrderSuccessful, tableNumber,drinkName,drinkBrand);
+        }
+        public string OrderFood(int tableNumber, string foodName)
+        {
+            var table = tables.FirstOrDefault(x => x.TableNumber == tableNumber);
+            if (table == null)
+                return string.Format(OutputMessages.WrongTableNumber, tableNumber);
+
+            var food = bakedFoods.FirstOrDefault(x => x.Name == foodName);
+            if (food == null)
+                return string.Format(OutputMessages.NonExistentFood, foodName);
+
+            table.OrderFood(food);
+            return string.Format(OutputMessages.FoodOrderSuccessful, tableNumber,foodName);
+        }
+        public string ReserveTable(int numberOfPeople)
+        {
+            var table = tables.FirstOrDefault(
+                x => x.Capacity >= numberOfPeople && x.IsReserved==false) ;
+            if (table == null)
+                return string.Format(OutputMessages.ReservationNotPossible, numberOfPeople);
+            table.Reserve(numberOfPeople);
+            return string.Format(OutputMessages.TableReserved, numberOfPeople);
+        }
+    }
+}
