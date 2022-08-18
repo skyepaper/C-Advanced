@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Bakery.Models.Drinks
 {
-    public class Water : Drink
+    public class Tea:Drink
     {
-        public Water(string name, int portion, string brand)
-            : base(name, portion, 1.50m, brand) { }
+        public Tea(string name, int portion,string brand)
+            : base(name, portion, 2.50m, brand) { }
         public override string ToString()
         {
-            return $"Water {base.ToString()}";
+            return $"Tea {base.ToString()}";
         }
     }
 }
